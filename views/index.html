@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Registered Users</h2>
+    <div id="usersList" class="mt-4">
+      <!-- Users will be listed here -->
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $.getJSON('/api/users', function(data) {
+        let usersHtml = '<table class="table table-bordered"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Profession</th><th>Actions</th></tr></thead><tbody>';
+        data.forEach(function(user) {
+          usersHtml += `
+            <tr>
+              <td>${user.name}</td>
+              <td>${user.email}</td>
+              <td>${user.phone}</td>
+              <td>${user.profession}</td>
+              <td>
+                <button class="btn btn-warning btn-sm" onclick="editUser('${user._id}')">Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser('${user._id}')">Delete</button>
+              </td>
+            </tr>`;
+        });
+        usersHtml += '</tbody></table>';
+        $('#usersList').html(usersHtml);
+      });
+    });
+
+    function editUser(userId) {
+      // Implement the user editing logic here
+      console.log('Edit user:', userId);
+    }
+
+    function deleteUser(userId) {
+      $.ajax({
+        url: '/api/users/' + userId,
+        type: 'DELETE',
+        success: function(result) {
+          alert('User deleted successfully!');
+          location.reload();
+        },
+        error: function() {
+          alert('Failed to delete user');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
